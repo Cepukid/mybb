@@ -275,7 +275,7 @@ if($mybb->input['action'] == "results")
 		if($search['querycache'] != "")
 		{
 			$where_conditions = $search['querycache'];
-			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' ORDER BY t.lastpost DESC {$limitsql}");
+			$query = $db->simple_select("threads t", "t.tid", $where_conditions. " AND {$unapproved_where} AND t.moved='0' ORDER BY t.lastpost DESC {$limitsql}");
 			while($thread = $db->fetch_array($query))
 			{
 				$threads[$thread['tid']] = $thread['tid'];
@@ -297,7 +297,7 @@ if($mybb->input['action'] == "results")
 		else
 		{
 			$where_conditions = "t.tid IN (".$search['threads'].")";
-			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.closed NOT LIKE 'moved|%' {$limitsql}");
+			$query = $db->simple_select("threads t", "COUNT(t.tid) AS resultcount", $where_conditions. " AND {$unapproved_where} AND t.moved='0' {$limitsql}");
 			$count = $db->fetch_array($query);
 
 			if(!$count['resultcount'])
@@ -347,7 +347,7 @@ if($mybb->input['action'] == "results")
 			FROM ".TABLE_PREFIX."threads t
 			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=t.uid)
 			LEFT JOIN ".TABLE_PREFIX."users last_poster ON (t.lastposteruid = u.uid)
-			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.closed NOT LIKE 'moved|%'
+			WHERE $where_conditions AND {$unapproved_where} {$permsql} AND t.moved='0'
 			ORDER BY $sortfield $order
 			LIMIT $start, $perpage
 		");
@@ -731,7 +731,7 @@ if($mybb->input['action'] == "results")
 			}
 
 			// Check the thread records as well. If we don't have permissions, remove them from the listing.
-			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$unapproved_where}{$permsql} OR closed LIKE 'moved|%')");
+			$query = $db->simple_select("threads", "tid", "tid IN(".$db->escape_string(implode(',', $pids)).") AND ({$unapproved_where}{$permsql} OR moved != '0')");
 			while($thread = $db->fetch_array($query))
 			{
 				if(array_key_exists($thread['tid'], $tids) != true)
