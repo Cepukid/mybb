@@ -1402,12 +1402,8 @@ function create_tables()
 		"database" => $config['dbname'],
 		"encoding" => $config['encoding']
 	);
-//$connection = new PDO("sqlsrv:server = tcp:sisforutm.database.windows.net,1433; Database = sisforutm", "dewa", "himasiUTM2018");
-  //  $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connectionInfo = array("UID" => "dewa@sisforutm", "pwd" => "himasiUTM2018", "Database" => "sisforutm", "LoginTimeout" => 30, "Encrypt" => 1, "TrustServerCertificate" => 0);
-$serverName = "tcp:sisforutm.database.windows.net,1433";
-$connection = sqlsrv_connect($serverName, $connectionInfo);
-	//$connection = $db->connect($connect_array);
+
+	$connection = $db->connect($connect_array);
 	if($connection === false)
 	{
 		$errors[] = $lang->sprintf($lang->db_step_error_noconnect, $config['dbhost']);
